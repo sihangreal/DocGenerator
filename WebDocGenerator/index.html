@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>招商基金量化部内部系统API接口文档</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script>
+        $.ajax({
+            url: "http://127.0.0.1:9000/API/Document/Names",
+            type: 'GET',
+            success: function (data) {
+                console.log(data); 
+                var list = "";
+                for (var i = 0; i < data.length; i++) {
+                    list += "<li>" + data[i] + "</li>";
+                }
+                document.getElementById('nav').innerHTML = list;
+
+                var liNodes = document.getElementsByTagName("li");
+                for (var i = 0; i < liNodes.length; i++) {
+                    liNodes[i].onclick = function () {
+                        GetApiDocument(this.firstChild.nodeValue);
+                    }
+                }
+            }
+        });
+
+        function GetApiDocument(name) {
+            $.ajax({
+                url: "http://127.0.0.1:9000/API/Document/" + name,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+    
+                    var tableDate="<thead><tr>"
+                                   +"<th>接口名称:</th>"
+                                   +"<th>"+data["Name"]+"</th>"
+                                   +"<th>请求类型:</th>"
+                                   +"<th>"+data["RequestType"]+"</th>"
+                                   +"</tr></thead>"
+                                   +"<thead><tr>"
+                                   +"<th>功能描述:</th>"
+                                   +"<th>"+data["Describe"]+"</th>"
+                                   +"</tr></thead>"
+                                   +"<thead><tr>"
+                                   +"<th>Url</th>"
+                                   +"<th>"+data["Address"]+"</th>"
+                                   +"</tr></thead>";
+
+                                var inparas=data["InParameterList"];
+                                var inparaDate="";           
+                                if(inparas!=null)
+                                {
+                                    inparaDate="<thead><tr>"
+                                   +"<th>输入参数</th>"
+                                   +"<th>参数类型</th>"
+                                   +"<th>参数释义</th>"
+                                   +"</tr></thead>"
+                                   +"<tbody>";
+                                  
+                                  var para="";
+                                  for(var i=0;i<inparas.length;i++)
+                                  {
+                                      var value=inparas[i];
+                                    para+="<tr><td>"+value["ParamName"]+"</td>"
+                                    +"<td>"+value["ParamType"]+"</td>"
+                                    +"<td>"+value["ParamDescribe"]+"</td></tr>"
+                                  }
+                                  inparaDate+=para;
+                                  +"</tbody>"
+                                }
+
+                                var postparas=data["PostParameterList"];
+                                var postparaDate="";
+                                if(postparas!=null)
+                                {
+                                    postparaDate="<thead><tr>"
+                                   +"<th>Post参数</th>"
+                                   +"<th>参数类型</th>"
+                                   +"<th>参数释义</th>"
+                                   +"</tr></thead>"
+                                   +"<tbody>";
+
+                                  var para="";
+                                  for(var i=0;i<postparas.length;i++)
+                                  {
+                                    var value=postparas[i];
+                                    para+="<tr><td>"+value["ParamName"]+"</td>"
+                                    +"<td>"+value["ParamType"]+"</td>"
+                                    +"<td>"+value["ParamDescribe"]+"</td></tr>"
+                                  }
+                                  postparaDate+=para;
+                                  +"</tbody>"
+                                }
+
+                                 var putparas=data["PutParameterList"];
+                                var putparaDate="";
+                                if(putparas!=null)
+                                {
+                                    postparaDate="<thead><tr>"
+                                   +"<th>Put参数</th>"
+                                   +"<th>参数类型</th>"
+                                   +"<th>参数释义</th>"
+                                   +"</tr></thead>"
+                                   +"<tbody>";
+
+                                  var para="";
+                                  for(var i=0;i<putparas.length;i++)
+                                  {
+                                    var value=putparas[i];
+                                    para+="<tr><td>"+value["ParamName"]+"</td>"
+                                    +"<td>"+value["ParamType"]+"</td>"
+                                    +"<td>"+value["ParamDescribe"]+"</td></tr>"
+                                  }
+                                  putparaDate+=para;
+                                  +"</tbody>"
+                                }
+
+                                
+                                var outparas=data["OutParameterList"];
+                                var outparaDate="";
+                                if(outparas!=null)
+                                {
+                                    outparaDate="<thead><tr>"
+                                   +"<th>Out参数</th>"
+                                   +"<th>参数类型</th>"
+                                   +"<th>参数释义</th>"
+                                   +"</tr></thead>"
+                                   +"<tbody>";
+
+                                  var para="";
+                                  for(var i=0;i<outparas.length;i++)
+                                  {
+                                    var value=outparas[i];
+                                    para+="<tr><td>"+value["ParamName"]+"</td>"
+                                    +"<td>"+value["ParamType"]+"</td>"
+                                    +"<td>"+value["ParamDescribe"]+"</td></tr>"
+                                  }
+                                  outparaDate+=para;
+                                  +"</tbody>"
+                                }
+                               
+                               tableDate+=inparaDate+postparaDate+putparaDate+outparaDate;
+                               
+                document.getElementById("table").innerHTML=tableDate;
+                }
+            });
+        }
+
+    </script>
+    <style>
+        #header {
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+        }
+
+        #nav {
+            line-height: 30px;
+            background-color: #eeeeee;
+            width: 15%;
+            height: 800px;
+            float: left;
+            padding: 5px;
+            border-left: 20px;
+        }
+
+        #section {
+            width: 60%;
+            float: left;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <h1>招商基金量化部接口文档</h1>
+    </div>
+
+    <div id="nav">
+        <u></u>
+    </div>
+
+    <div id="section">
+        <table id="table" class="table table-condensed">
+            <!-- <thead>
+                <tr>
+                    <th>接口名称</th>
+                    <th>登录</th>
+                    <th>请求类型</th>
+                    <th>GET</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th>功能描述</th>
+                    <th>用户登录</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th>Url</th>
+                    <th>Login</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th>输入参数</th>
+                    <th>类型</th>
+                    <th>解释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>userId</td>
+                    <td>string</td>
+                    <td>用户ID</td>
+                </tr>
+                <tr>
+                    <td>password</td>
+                    <td>string</td>
+                    <td>用户密码</td>
+                </tr>
+                <tr>
+                    <td>Uma</td>
+                    <td>Pune</td>
+                    <td>411027</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Post参数</th>
+                    <th>类型</th>
+                    <th>解释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>userId</td>
+                    <td>string</td>
+                    <td>用户ID</td>
+                </tr>
+                <tr>
+                    <td>password</td>
+                    <td>string</td>
+                    <td>用户密码</td>
+                </tr>
+                <tr>
+                    <td>Uma</td>
+                    <td>Pune</td>
+                    <td>411027</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Put参数</th>
+                    <th>类型</th>
+                    <th>解释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>userId</td>
+                    <td>string</td>
+                    <td>用户ID</td>
+                </tr>
+                <tr>
+                    <td>password</td>
+                    <td>string</td>
+                    <td>用户密码</td>
+                </tr>
+                <tr>
+                    <td>Uma</td>
+                    <td>Pune</td>
+                    <td>411027</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>输出参数</th>
+                    <th>类型</th>
+                    <th>解释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>userId</td>
+                    <td>string</td>
+                    <td>用户ID</td>
+                </tr>
+                <tr>
+                    <td>password</td>
+                    <td>string</td>
+                    <td>用户密码</td>
+                </tr>
+                <tr>
+                    <td>Uma</td>
+                    <td>Pune</td>
+                    <td>411027</td>
+                </tr>
+            </tbody> -->
+        </table>
+</body>
+
+</html>
