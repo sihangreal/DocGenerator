@@ -15,11 +15,12 @@
                 console.log(data);
                 var list = "";
                 for (var i = 0; i < data.length; i++) {
-                    list += "<li>" + data[i] + "</li>";
+                    list += "<a href='#' class='list-group-item list-group-item-action'>" + data[i] + "</a>";
+                    // list += "<li class='list-group-item'>" + data[i] + "</li>";
                 }
                 document.getElementById('nav').innerHTML = list;
 
-                var liNodes = document.getElementsByTagName("li");
+                var liNodes = document.getElementsByTagName("a");
                 for (var i = 0; i < liNodes.length; i++) {
                     liNodes[i].onclick = function () {
                         GetApiDocument(this.firstChild.nodeValue);
@@ -38,6 +39,8 @@
                     var tableDate = "<thead><tr>"
                         + "<th>接口名称:</th>"
                         + "<th>" + data["Name"] + "</th>"
+                        + "</tr></thead>"
+                        +"<thead><tr>"
                         + "<th>请求类型:</th>"
                         + "<th>" + data["RequestType"] + "</th>"
                         + "</tr></thead>"
@@ -148,17 +151,23 @@
         }
 
         #nav {
-            line-height: 30px;
-            background-color: #eeeeee;
-            width: 15%;
-            height: 800px;
+            line-height: 20px;
+            font-style:inherit;
+            background-color: #aaaaaa;
+            width: 20%;
+            height: 850px;
             float: left;
-            padding: 5px;
-            border-left: 20px;
+            padding: 2px;
+            /* border-left: 200px; */
+
+            /* border: thin solid rgb(57, 89, 177); */
+			position: relative;
+			overflow-x: hidden;
+			overflow-y: scroll;
         }
 
         #section {
-            width: 60%;
+            width: 80%;
             float: left;
             padding: 10px;
         }
@@ -170,8 +179,8 @@
         <h1>招商基金量化部接口文档</h1>
     </div>
 
-    <div id="nav">
-        <ul id="test"></ul>
+    <div id="nav" class="list-group">
+        <!-- <ul class="list-group list-group-flush"></ul> -->
     </div>
 
     <div id="section">

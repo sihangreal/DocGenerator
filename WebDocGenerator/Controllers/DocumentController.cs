@@ -13,14 +13,14 @@ namespace WebDocGenerator.Controllers
         [Route("Api/Document/Names")]
         public List<string> GetApiNameList()
         {
-            Generator2 generator = Generator2.GetGenerator();
+            Generator generator = Generator.GetGenerator();
             return generator.GetApiNameList();
         }
 
         [Route("Api/Document/{name}")]
         public CustomApi GetCustomApi(string name)
         {
-            Generator2 generator = Generator2.GetGenerator();
+            Generator generator = Generator.GetGenerator();
             CustomApi api = generator.GetCustomApi(name);
             return api;
         }

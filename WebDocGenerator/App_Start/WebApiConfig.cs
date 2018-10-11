@@ -25,7 +25,7 @@ namespace WebDocGenerator
             var jsonFormatter = new JsonMediaTypeFormatter();
             config.Services.Replace(typeof(IContentNegotiator), new JsonContentNegotiator(jsonFormatter));
 
-            Generator2 generator = Generator2.GetGenerator();
+            Generator generator = Generator.GetGenerator();
             generator.GeneratorApi();
         }
     }

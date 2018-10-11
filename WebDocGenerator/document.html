@@ -1,32 +1,35 @@
-<!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<title>Bootstrap 实例 - 默认的导航栏</title>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+	<style type="text/css">
+		#div1 {
+			border: thin solid rgb(57, 89, 177);
+			position: relative;
+			overflow-x: hidden;
+			overflow-y: scroll;
+			width: 100px;
+			height: 100%;
+		}
+	</style>
+
+
+	<script type="text/javascript">
+		function hideOverflow() {
+			document.getElementById("div1").style.overflow = "hidden";
+		}
+	</script>
 </head>
+
 <body>
 
-	<style>
-		.focus {color: blue;}
-		</style>
-		<ul id="xx">
-			<li>test1</li>
-			<li>test2</li>
-		</ul>
-
-		<script>
-		$(document).ready(function(){
-			$('#xx li').click(function(){
-				if ($(this).hasClass('focus')) {
-					return true;
-				} else {
-					$('#xx li').removeClass('focus');
-					$(this).addClass('focus');
-				}
-			});
-		});
-		</script>
+	<div id="div1">
+		This is some text. This is some text. This is some text.
+		This is some text. This is some text. This is some text.
+		This is some text. This is some text. This is some text.
+	</div>
+	<br />
+	<input type="button" onclick="hideOverflow()" value="Hide overflow" />
 
 </body>
+
 </html>

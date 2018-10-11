@@ -10,7 +10,7 @@ namespace DocGenerator
     {
         static void Main(string[] args)
         {
-            using (Microsoft.Owin.Hosting.WebApp.Start<Startup>("http://127.0.0.1:9000"))
+            using (Microsoft.Owin.Hosting.WebApp.Start<Startup>("http://127.0.0.1:9009"))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
 
