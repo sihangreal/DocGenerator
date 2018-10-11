@@ -45,7 +45,6 @@ namespace WebDocGenerator
                 CustomApi api = new CustomApi();
                 api.OutParameterList = GetCmfChinaOutParameter(method.ReturnParameter);
                 api.Name = desc.Name;
-                api.Describe = desc.Describle;
                 //Post Put
                 WebInvokeAttribute webAttr = method.GetCustomAttribute<WebInvokeAttribute>();
                 if (webAttr != null)
@@ -146,9 +145,20 @@ namespace WebDocGenerator
         {
             Type type = paraInfo.ParameterType;
             List<Parameter> paraList = new List<Parameter>();
-            foreach (var property in type.GetProperties())
+            if (type.IsGenericType)
             {
-                paraList.Add(GetParameter(property));
+                Type[] proParamTypes = type.GenericTypeArguments;
+                foreach (var property in proParamTypes[0].GetProperties())
+                {
+                    paraList.Add(GetParameter(property));
+                }
+            }
+            else
+            {
+                foreach (var property in type.GetProperties())
+                {
+                    paraList.Add(GetParameter(property));
+                }
             }
             return paraList;
         }
@@ -187,9 +197,20 @@ namespace WebDocGenerator
             List<Parameter> paraList = new List<Parameter>();
             if (type.IsClass)
             {
-                foreach (var property in type.GetProperties())
+                if (type.IsGenericType)
                 {
-                    paraList.Add(GetParameter(property));
+                    Type[] proParamTypes = type.GenericTypeArguments;
+                    foreach (var property in proParamTypes[0].GetProperties())
+                    {
+                        paraList.Add(GetParameter(property));
+                    }
+                }
+                else
+                {
+                    foreach (var property in type.GetProperties())
+                    {
+                        paraList.Add(GetParameter(property));
+                    }
                 }
             }
             else
@@ -215,9 +236,20 @@ namespace WebDocGenerator
             List<Parameter> paraList = new List<Parameter>();
             PropertyInfo propertyInfo = type.GetProperty("Data");
             Type proType = propertyInfo.PropertyType;
-            foreach (PropertyInfo property in proType.GetProperties())
+            if (proType.IsGenericType)
             {
-                paraList.Add(GetParameter(property));
+                Type[] proParamTypes = proType.GenericTypeArguments;
+                foreach(var property in proParamTypes[0].GetProperties())
+                {
+                    paraList.Add(GetParameter(property));
+                }
+            }
+            else
+            {
+                foreach (var property in proType.GetProperties())
+                {
+                    paraList.Add(GetParameter(property));
+                }
             }
             return paraList;
         }

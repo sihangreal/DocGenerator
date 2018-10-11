@@ -115,16 +115,18 @@
     <Content Include="Css\bootstrap.min.css" />
     <Content Include="Css\docs.min.css" />
     <Content Include="Global.asax" />
-    <Content Include="Home.html" />
     <Content Include="index.html" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="Generator2.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
