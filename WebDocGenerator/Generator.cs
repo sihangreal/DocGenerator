@@ -24,7 +24,7 @@ namespace WebDocGenerator
             string dllpath = ConfigurationManager.AppSettings["DLLPath"];
             string xmlPath = ConfigurationManager.AppSettings["XmlPath"];
 
-            _assembly = Assembly.LoadFrom(dllpath);
+            _assembly =Assembly.LoadFrom(dllpath);
             _xmlDoc = LoadXmlDocument(xmlPath);
         }
 

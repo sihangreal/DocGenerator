@@ -8,8 +8,13 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
     <script>
+        var address = window.location.origin;
+        thisDLoc = document.location;
+        var hostport = document.location.host;
+
         $.ajax({
-            url: "http://127.0.0.1:9000/API/Document/Names",
+            url: address + "/API/Document/Names",
+            //url:"127.0.0.1:9000/API/Document/Names",
             type: 'GET',
             success: function (data) {
                 console.log(data);
@@ -31,7 +36,7 @@
 
         function GetApiDocument(name) {
             $.ajax({
-                url: "http://127.0.0.1:9000/API/Document/" + name,
+                url: address+"/API/Document/" + name,
                 type: 'GET',
                 success: function (data) {
                     console.log(data);
