@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
@@ -150,6 +151,9 @@ namespace WebDocGenerator
                 Type[] proParamTypes = type.GenericTypeArguments;
                 foreach (var property in proParamTypes[0].GetProperties())
                 {
+                    DataMemberAttribute dataAttr = (DataMemberAttribute)property.GetCustomAttribute(typeof(DataMemberAttribute), false);
+                    if (dataAttr == null)
+                        continue;
                     paraList.Add(GetParameter(property));
                 }
             }
@@ -157,6 +161,9 @@ namespace WebDocGenerator
             {
                 foreach (var property in type.GetProperties())
                 {
+                    DataMemberAttribute dataAttr = (DataMemberAttribute)property.GetCustomAttribute(typeof(DataMemberAttribute), false);
+                    if (dataAttr == null)
+                        continue;
                     paraList.Add(GetParameter(property));
                 }
             }
@@ -243,6 +250,9 @@ namespace WebDocGenerator
                     Type[] proParamTypes = proType.GenericTypeArguments;
                     foreach (var property in proParamTypes[0].GetProperties())
                     {
+                        DataMemberAttribute dataAttr = (DataMemberAttribute)property.GetCustomAttribute(typeof(DataMemberAttribute), false);
+                        if (dataAttr == null)
+                            continue;
                         paraList.Add(GetParameter(property));
                     }
                 }
@@ -250,6 +260,9 @@ namespace WebDocGenerator
                 {
                     foreach (var property in proType.GetProperties())
                     {
+                        DataMemberAttribute dataAttr = (DataMemberAttribute)property.GetCustomAttribute(typeof(DataMemberAttribute), false);
+                        if (dataAttr == null)
+                            continue;
                         paraList.Add(GetParameter(property));
                     }
                 }
