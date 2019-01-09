@@ -199,7 +199,7 @@ namespace WebDocGenerator
             {
                 PropertyInfo propertyInfo = type.GetProperty("Data");
                 Type proType = propertyInfo.PropertyType;
-                paraList=GetParameter(type);
+                paraList=GetParameter(proType);
             }
             else
             {
