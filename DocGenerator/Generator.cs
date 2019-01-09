@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
+using DocGenerator;
 
 namespace DocGenerator
 {
@@ -145,21 +147,7 @@ namespace DocGenerator
         {
             Type type = paraInfo.ParameterType;
             List<Parameter> paraList = new List<Parameter>();
-            if (type.IsGenericType)
-            {
-                Type[] proParamTypes = type.GenericTypeArguments;
-                foreach (var property in proParamTypes[0].GetProperties())
-                {
-                    paraList.Add(GetParameter(property));
-                }
-            }
-            else
-            {
-                foreach (var property in type.GetProperties())
-                {
-                    paraList.Add(GetParameter(property));
-                }
-            }
+            paraList = GetParameter(type);
             return paraList;
         }
         /// <summary>
@@ -194,34 +182,7 @@ namespace DocGenerator
         private List<Parameter> GetOutParameterList(MethodInfo method, ParameterInfo paraInfo)
         {
             Type type = paraInfo.ParameterType;
-            List<Parameter> paraList = new List<Parameter>();
-            if (type.IsClass)
-            {
-                if (type.IsGenericType)
-                {
-                    Type[] proParamTypes = type.GenericTypeArguments;
-                    foreach (var property in proParamTypes[0].GetProperties())
-                    {
-                        paraList.Add(GetParameter(property));
-                    }
-                }
-                else
-                {
-                    foreach (var property in type.GetProperties())
-                    {
-                        paraList.Add(GetParameter(property));
-                    }
-                }
-            }
-            else
-            {
-                Parameter para = new Parameter();
-                //构造参数
-                para.ParamName = paraInfo.Name;
-                para.ParamType = paraInfo.ParameterType.Name;
-                para.ParamDescribe = GetReturnAnnoation(method, paraInfo.Name);
-                paraList.Add(para);
-            }
+            List<Parameter> paraList = GetParameter(type);
             return paraList;
         }
         /// <summary>
@@ -238,21 +199,7 @@ namespace DocGenerator
             {
                 PropertyInfo propertyInfo = type.GetProperty("Data");
                 Type proType = propertyInfo.PropertyType;
-                if (proType.IsGenericType)
-                {
-                    Type[] proParamTypes = proType.GenericTypeArguments;
-                    foreach (var property in proParamTypes[0].GetProperties())
-                    {
-                        paraList.Add(GetParameter(property));
-                    }
-                }
-                else
-                {
-                    foreach (var property in proType.GetProperties())
-                    {
-                        paraList.Add(GetParameter(property));
-                    }
-                }
+                paraList = GetParameter(type);
             }
             else
             {
@@ -263,32 +210,99 @@ namespace DocGenerator
                 para.ParamDescribe = "下载的文件";
                 paraList.Add(para);
             }
-
             return paraList;
         }
         /// <summary>
         /// 获取单个参数
         /// </summary>
-        /// <param name="property"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        private Parameter GetParameter(PropertyInfo property)
+        private List<Parameter> GetParameter(Type type)
         {
-            string paraName = "P:" + property.DeclaringType.FullName + "." + property.Name;
-            string desc = GetParameterAnnoation(paraName);
-            Parameter para = new Parameter();
-            //构造参数
-            para.ParamName = property.Name;
-            if (property.PropertyType.Name.Equals("Nullable`1"))
+            List<Parameter> parameterList = new List<Parameter>();
+            if (type.IsGenericType)
             {
-                para.ParamType = property.PropertyType.GenericTypeArguments[0].Name;
+                Parameter parameter = new Parameter();
+                parameter.ParamType = type.Name;
+                Type[] gptyes = type.GetGenericArguments();
+                Type gtype = gptyes[0];
+                if (gtype.IsClass)
+                {
+                    parameter.childParam = GetParameter(gtype);
+                }
+                else
+                {
+                    Parameter gparam = new Parameter();
+                    if (type.Name.Equals("Nullable`1"))
+                        gparam.ParamType = gtype.GenericTypeArguments[0].Name;
+                    else
+                        gparam.ParamType = gtype.Name;
+                    parameter.childParam = new List<Parameter>() { gparam };
+                }
+                parameterList.Add(parameter);
             }
             else
             {
-                para.ParamType = property.PropertyType.Name;
+                foreach (var pinfo in type.GetProperties())
+                {
+                    Parameter parameter = new Parameter();
+                    parameter.ParamName = pinfo.Name;
+                    Type ptype = pinfo.PropertyType;
+
+                    DisplayNameAttribute disPaly = pinfo.GetCustomAttribute<DisplayNameAttribute>();
+                    string desc = "";
+                    if (disPaly != null)
+                    {
+                        desc = disPaly.DisplayName;
+                    }
+                    else
+                    {
+                        string paraName = "P:" + pinfo.DeclaringType.FullName + "." + pinfo.Name;
+                        desc = GetParameterAnnoation(paraName);
+                    }
+                    parameter.ParamDescribe = desc;
+
+                    if (ptype.Name.Equals("Nullable`1"))
+                        parameter.ParamType = ptype.GenericTypeArguments[0].Name;
+                    else if (ptype.IsGenericType)
+                    {
+                        parameter.ParamType = ptype.Name;
+                        Type[] gptyes = ptype.GetGenericArguments();
+                        Type gtype = gptyes[0];
+                        if (gtype.IsClass)
+                        {
+                            parameter.childParam = GetParameter(gtype);
+                        }
+                        else
+                        {
+                            Parameter gparam = new Parameter();
+                            if (ptype.Name.Equals("Nullable`1"))
+                                gparam.ParamType = gtype.GenericTypeArguments[0].Name;
+                            else
+                                gparam.ParamType = gtype.Name;
+                            parameter.childParam = new List<Parameter>() { gparam };
+                        }
+                    }
+                    else if (ptype.IsValueType)
+                    {
+                        parameter.ParamType = ptype.Name;
+                    }
+                    else if (ptype.IsClass)
+                    {
+                        if (ptype.Name.Equals("String"))
+                            parameter.ParamType = ptype.Name;
+                        else
+                        {
+                            parameter.ParamType = ptype.Name;
+                            parameter.childParam = GetParameter(ptype);
+                        }
+                    }
+                    parameterList.Add(parameter);
+                }
             }
-            para.ParamDescribe = desc;
-            return para;
+            return parameterList;
         }
+
         /// <summary>
         /// 加载注释XML
         /// </summary>

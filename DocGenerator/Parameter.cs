@@ -22,5 +22,10 @@ namespace DocGenerator
         /// 参数描述
         /// </summary>
         public string ParamDescribe { get; set; }
+
+        /// <summary>
+        /// 子集参数
+        /// </summary>
+        public List<Parameter> childParam { get; set; }
     }
 }
